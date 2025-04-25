@@ -1,0 +1,19 @@
+package com.ketan.models;
+
+import jakarta.persistence.Entity;
+
+@Entity
+public class PaymentEntity {
+
+	/*
+	 * • transactionId (UUID) • orderId (UUID) • customerId (UUID) • totalAmount
+	 * (BigDecimal) • paymentStatus (Enum: SUCCESS, FAILED, PENDING) • timestamp
+	 * (DateTime)
+	 */
+
+	int transactionId;
+	int orderId;
+	int customerId;
+	BigDecimal totalAmount;
+	PaymentStatus paymentStatus;
+}

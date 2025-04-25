@@ -1,0 +1,30 @@
+package com.ketan.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.ketan.Bean.OrderResponseBean;
+import com.ketan.Bean.orderBean;
+import com.ketan.outbound.ProductFeignClient;
+
+@Service
+public class OrderServiceImpl  implements OrderService{
+	
+	@Autowired
+	ProductFeignClient productFeignClient;
+	
+	@Override
+	public OrderResponseBean placeOrder(orderBean OrdersBean) {
+		
+		int total = 0 ;
+		OrdersBean.getProductList().stream().forEach((product) -> {
+			product.getProductId();
+			
+		});
+		
+		return null;
+	}
+	
+	
+
+}

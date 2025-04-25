@@ -1,0 +1,8 @@
+package com.ketan.service;
+
+import com.ketan.Bean.OrderResponseBean;
+
+public interface OrderService {
+
+	OrderResponseBean placeOrder();
+}

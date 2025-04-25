@@ -1,0 +1,16 @@
+package com.ketan.config;
+
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class AppSecurityConfig {
+
+//		step 1 
+	@Bean
+	InMemoryUserDetailsManager userDetailService() {
+		UserDetails userDetails = User.withDefaultPasswordEncoder().username("admin").password("admin").roles("ADMIN")
+				.build();
+		return new InMemoryUserDetailsManager(userDetails);
+	}
+
+}

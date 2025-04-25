@@ -1,0 +1,46 @@
+package com.ketan.controller;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.ketan.Bean.OrderResponseBean;
+import com.ketan.Bean.orderBean;
+import com.ketan.advice.ApiException;
+import com.ketan.handler.OrderStatus;
+import com.ketan.service.OrderService;
+
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+
+@RestController
+public class OrderController {
+
+	@Autowired
+	OrderService orderService;
+
+	@PostMapping("/place-order")
+	@CircuitBreaker(name = "order-circuit" , fallbackMethod = "placeOrder_fallback")
+	public ResponseEntity<OrderResponseBean> createProduct(@RequestBody orderBean orderBean) {
+
+		OrderResponseBean response = orderService.placeOrder(orderBean);
+		if (response.getOrderStatus().equals(OrderStatus.UNSUCCESSFULL.toString())) {
+			throw new ApiException("Order not placed", HttpStatus.INTERNAL_SERVER_ERROR.value());
+		} else {
+			return ResponseEntity.ok(response);
+		}
+
+	}
+
+	public ResponseEntity<Object> placeOrder_fallback(Throwable th) {
+
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("Message", "service is down now, Please try again later");
+		return ResponseEntity.internalServerError().body(map);
+	}
+}

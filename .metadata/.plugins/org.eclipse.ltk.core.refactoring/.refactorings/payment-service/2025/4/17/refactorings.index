@@ -1,0 +1,11 @@
+1745547002546	Rename package 'com.weshopify.platform'
+1745547012903	Rename package 'com.weshopify.platform.handler'
+1745547547748	Rename type 'InvoiceStatus'
+1745547613492	Rename type 'InvoiceAggregate'
+1745548989481	Rename compilation unit 'PaymentBean.java'
+1745549048781	Delete element
+1745554167892	Rename package 'com.ketan.platform'
+1745555741780	Encapsulate field 'pricePerProduct'
+1745562595356	Copy package
+1745562618524	Delete element
+1745583173769	Copy package

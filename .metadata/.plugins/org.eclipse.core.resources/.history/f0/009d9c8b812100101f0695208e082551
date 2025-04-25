@@ -1,0 +1,39 @@
+package com.ketan.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.ketan.Bean.PaymentBean;
+import com.ketan.Bean.orderBean;
+import com.ketan.service.PaymentService;
+
+import lombok.extern.slf4j.Slf4j;
+
+@RestController
+@Slf4j
+public class PaymentController {
+
+	private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(PaymentController.class);
+
+	@Autowired
+	PaymentService paymentService;
+
+	@PostMapping("/payment")
+	public ResponseEntity<orderBean> createProduct(@RequestBody orderBean productBean) {
+
+		return null;
+	}
+
+	@GetMapping("payment/{transactionId}")
+	public ResponseEntity<PaymentBean> getMethodName(@PathVariable int transactionId) {
+
+		paymentService.getPayment(transactionId)
+		return new ResponseEntity(null);
+	}
+
+}

@@ -1,0 +1,10 @@
+package com.ketan.service;
+
+import com.ketan.Bean.PaymentBean;
+
+public interface PaymentService {
+
+	PaymentBean getPayment(int transactionId);
+
+	String makePayment();
+}

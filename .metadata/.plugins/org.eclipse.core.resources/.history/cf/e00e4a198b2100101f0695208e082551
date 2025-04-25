@@ -1,0 +1,15 @@
+package com.ketan;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
+
+@SpringBootApplication
+@ComponentScan(basePackages = {"com.weshopify.platform.handler"})
+public class WeshopifyPlatformSagaPaymentServiceApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(WeshopifyPlatformSagaPaymentServiceApplication.class, args);
+	}
+
+}

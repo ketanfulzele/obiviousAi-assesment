@@ -1,0 +1,56 @@
+package com.ketan.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.ketan.Bean.OrderResponseBean;
+import com.ketan.Bean.orderBean;
+import com.ketan.outbound.ProductFeignClient;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@Slf4j
+public class OrderServiceImpl  implements OrderService{
+	
+	private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(OrderServiceImpl.class);
+
+	@Autowired
+	ProductFeignClient productFeignClient;
+	
+	@Override
+	public OrderResponseBean placeOrder(orderBean OrdersBean) {
+		
+		int total = 0 ;
+		OrdersBean.getProductList().stream().forEach((product) -> {
+			product.getProductId();
+			
+		});
+		
+		
+		log.info("invoking the product service via feign client");
+		ResponseEntity<String> productBean = productFeignClient.getProductById(int id);
+		Long end = System.currentTimeMillis();
+		log.info("total time taken by findCategoryById api call is in milli {}", (end - start));
+
+		if (category.getStatusCode().value() == HttpStatus.OK.value() && category != null) {
+			try {
+				log.info("successfully get the category \t" , category.getBody() );
+				CategoryBean object = objectMapper.readValue(category.getBody() , CategoryBean.class);
+				categories.add(object);
+			} catch (JsonProcessingException e) {
+
+				throw new ApiException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value());
+			}
+		}else {
+			log.info("failed to get category by id hence, retry pattern will try for 3 times after each 3 seconds");
+		}
+		
+		return null;
+	}
+	
+	private 
+	
+	
+
+}

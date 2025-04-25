@@ -1,0 +1,108 @@
+spring:
+  application:
+    name: WESHOPIFY-PLATFORM-API-GATEWAY
+    
+# enable service discovery from gateway.
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+#       categories service routes 
+        - id : WESHOPIFY-CATEGORY-SERVICE
+          uri : lb://WESHOPIFY-CATEGORY-SERVICE
+          predicates:
+          - Path=/gateway-catg-svc/**
+          filters:
+          - RewritePath=/gateway-catg-svc/(?<segment>.*),/${segment}
+ #       brand service routes 
+        - id :  weshopify-brand-service-2
+          uri : lb://weshopify-brand-service-2
+          predicates:
+          - Path=/gateway-brand-svc/**
+          filters:
+          - RewritePath=/gateway-brand-svc/(?<segment>.*),/${segment}
+        
+
+management:
+# spring boot3.X onwards we need to explicitly enabled gateway routes endpoint for spring actuators
+  endpoint:
+    gateway:
+      access: READ_ONLY
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  tracing:
+    enabled: true
+    sampling:
+      probability: 1.0
+  zipkin:
+    tracing:
+      endpoint: http://${ZIPKIN_HOST:localhost}:${ZIPKIN_PORT:9411}/api/v2/spans
+logging:
+  pattern:
+    level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
+server:
+  port: 5012
+  
+eureka : 
+     client: 
+       service-url:
+         defaultZone: http://${SERVICE_REGISTRY_HOST:localhost}:${SERVICE_REGISTRY_PORT:8761}/eureka
+#  use to register our category service as local host and not with laptop host( LTIN538669.cts.com)
+     instance:
+       hostname: ${SERVICE_REGISTRY_HOST:localhost}
+       instance-id : ${spring.application.name}:${server.port}
+       prefer-ip-address : true
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    urls:
+    - name: category service 
+      url: /gateway-catg-svc/v3/api-docs
+    - name: brand service 
+      url: /gateway-brand-svc/v3/api-docs
+             
+
+# swagger-ui custom path
+#springdoc:
+#  enable-native-support : true
+#  api-docs:
+#    groups:
+#      enabled:   true 
+#    enabled: true
+#  group-configs:
+#  - group: api-gateway
+#    packages-to-scan:
+#    -  com.weshopify.platform
+#    display-name: API Gateway 
+#  - group: WESHOPIFY-CATEGORY-SERVICE
+#    paths-to-match:
+#    - /gateway-catg-svc/**
+#    display-name: category service
+#  - group: weshopify-brand-service-2
+#    paths-to-match:
+#    - /gateway-brand-svc/**
+#    display-name: Brand Service
+#  swagger-ui:
+#    enabled: true
+#    config-url: /v3/api-docs/swagger-config
+#    url: /v3/api-docs
+#    urls:
+#    - url: /v3/api-docs
+#      name: API-Gateway
+#    - url: /gateway-catg-svc/v3/api-docs
+#      name : Category service
+#    - url: /gateway-brand-svc/v3/api-docs
+#      name: Brand Service
+      
+      
+    
+

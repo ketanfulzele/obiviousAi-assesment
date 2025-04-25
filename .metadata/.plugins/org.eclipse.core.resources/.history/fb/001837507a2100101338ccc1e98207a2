@@ -1,0 +1,88 @@
+package com.weshopify.platform.config;
+
+import java.util.UUID;
+
+import org.axonframework.commandhandling.gateway.CommandGateway;
+import org.axonframework.modelling.saga.EndSaga;
+import org.axonframework.modelling.saga.SagaEventHandler;
+import org.axonframework.modelling.saga.StartSaga;
+import org.axonframework.spring.stereotype.Saga;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.ketan.commands.CreateInvoiceCommand;
+import com.ketan.commands.CreateShippingCommand;
+import com.weshopify.platform.events.InvoiceCreatedEvent;
+import com.weshopify.platform.events.OrderCreatedEvent;
+import com.weshopify.platform.events.OrderShippmentEvent;
+import com.weshopify.platform.events.PaymentProcessFailedEvent;
+import com.weshopify.platform.model.Order;
+import com.weshopify.platform.model.OrderStatus;
+import com.weshopify.platform.outbound.ProductApiClient;
+import com.weshopify.platform.repo.OrderRepo;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Saga
+@Slf4j
+public class OrderManagementSaga {
+	private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(OrderManagementSaga.class);
+
+	@Autowired
+	private CommandGateway commandGateway;
+
+	/*
+	 * @Autowired OrderRepo orderRepo;
+	 */
+
+	@Autowired
+	ProductApiClient productApiClient;
+
+	@StartSaga
+	@SagaEventHandler(associationProperty = "orderId")
+	public void handleOrderCreatedEvent(OrderCreatedEvent orderEvent) {
+
+		log.info("Order event received , creating invoice command");
+		String PaymentId = UUID.randomUUID().toString();
+		CreateInvoiceCommand createInvoiceCommand = new CreateInvoiceCommand(PaymentId, orderEvent.orderId,
+				orderEvent.price);
+		commandGateway.send(createInvoiceCommand);
+		log.info("Dispatched createInvoiceCommand to payment service");
+	}
+
+	@SagaEventHandler(associationProperty = "orderId")
+	public void handleInvoiceCreatedEvent(InvoiceCreatedEvent invoiceCreatedEvent) {
+		log.info("saga handler received InvoiceCreatedEvent , creating shipment command");
+		String shippingId = UUID.randomUUID().toString();
+		CreateShippingCommand shipmentCommand = new CreateShippingCommand(shippingId, invoiceCreatedEvent.orderId,
+				invoiceCreatedEvent.paymentId);
+
+		commandGateway.send(shipmentCommand);
+		log.info("Dispatching shipping command ");
+	}
+
+	/**
+	 * This is called as compensating transaction 
+	 * @param paymentFailedEvent
+	 */
+	@SagaEventHandler(associationProperty = "orderId")
+	public void handlePaymentProcessFailedEvent(PaymentProcessFailedEvent paymentFailedEvent) {
+		log.info("saga handler received paymentFailedEvent");
+
+		Order order = OrderRepo.findById(paymentFailedEvent.orderId);
+		boolean isReseted = productApiClient.resetProduct(order.getProductId(), order.getQauntity());
+
+		if (isReseted) {
+			order.setStatus(OrderStatus.REJECTED.toString());
+			OrderRepo.updateOrder(order);
+			
+		}
+
+	}
+
+	@EndSaga
+	@SagaEventHandler(associationProperty = "orderId")
+	public void handleOrderShippmentEvent(OrderShippmentEvent orderShippmentEvent) {
+		log.info("saga handler received orderShippmentEvent , saga ends here and order DB updated");
+
+	}
+}

@@ -1,0 +1,41 @@
+package com.ketan.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.web.SecurityFilterChain;
+
+@Configuration
+public class AppSecurityConfig {
+
+////		step 1 
+//	@Bean
+//	InMemoryUserDetailsManager userDetailService() {
+//		UserDetails userDetails = User.withDefaultPasswordEncoder().username("admin").password("admin").roles("ADMIN")
+//				.build();
+//		return new InMemoryUserDetailsManager(userDetails);
+//	}
+//
+//	@Bean
+//	WebSecurityCustomizer webSecurityCustomizer() {
+//		return (web) -> web.ignoring().requestMatchers("/swagger-ui.html", "/swagger-ui/**", "v3/api-docs/**",
+//				"/h2-console/**", "/actuator/**");
+//	}
+
+	@Bean
+	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+		
+		http.authorizeHttpRequests(authz -> {
+			try {
+				authz.anyRequest().authenticated()
+					.and().csrf().disable().anonymous().disable();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	});
+		return http.build();
+		
+	}
+
+}

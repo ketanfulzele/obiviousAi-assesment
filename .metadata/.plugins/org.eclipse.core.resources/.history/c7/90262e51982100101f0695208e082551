@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: weshopify-product-service
+  datasource:
+    driverClassName : org.h2.Driver
+#    username : admin
+#    password: admin
+    url: jdbc:h2:mem:testdb
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    defer-datasource-initialization: true
+    hibernate:
+      ddl-auto: update
+  h2:
+    console:
+      enabled: true
+server:
+  port: 5018
+  
+springdoc:
+  api-docs:
+    enabled:   true  
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    
+resilience4j:
+  circuitbreaker:
+    instances:
+      categories-circuit : 
+        registerHealthIndicator: true
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 30s
+        permittedNumberOfCallsInHalfOpenState: 2
+  

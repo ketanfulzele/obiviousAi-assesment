@@ -1,0 +1,10 @@
+package com.ketan.Bean;
+
+import java.util.List;
+
+public class orderBean {
+
+	int orderId;
+	List<ProductBean> productList;
+	
+}

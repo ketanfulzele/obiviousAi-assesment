@@ -1,0 +1,52 @@
+package com.ketan.models;
+
+import java.io.Serializable;
+
+import com.ketan.handler.OrderStatus;
+
+import jakarta.persistence.Entity;
+
+@Entity
+public class OrdersEntity implements Serializable{
+
+	int orderId;
+	int AmountToPay;
+	OrderStatus orderStatus;
+	
+	public OrdersEntity(int orderId, int amountToPay, OrderStatus orderStatus) {
+		super();
+		this.orderId = orderId;
+		AmountToPay = amountToPay;
+		this.orderStatus = orderStatus;
+	}
+
+	public OrdersEntity() {
+		super();
+	}
+
+	public int getOrderId() {
+		return orderId;
+	}
+
+	public void setOrderId(int orderId) {
+		this.orderId = orderId;
+	}
+
+	public int getAmountToPay() {
+		return AmountToPay;
+	}
+
+	public void setAmountToPay(int amountToPay) {
+		AmountToPay = amountToPay;
+	}
+
+	public OrderStatus getOrderStatus() {
+		return orderStatus;
+	}
+
+	public void setOrderStatus(OrderStatus orderStatus) {
+		this.orderStatus = orderStatus;
+	}
+	
+	
+}

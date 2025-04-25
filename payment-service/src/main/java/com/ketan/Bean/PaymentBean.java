@@ -1,0 +1,79 @@
+package com.ketan.Bean;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
+import com.ketan.handler.PaymentStatus;
+
+public class PaymentBean {
+
+	int transactionId;
+	int orderId;
+	int customerId;
+	BigDecimal totalAmount;
+	PaymentStatus paymentStatus;
+	LocalDate timestamp;
+
+	public PaymentBean() {
+		super();
+	}
+
+	public PaymentBean(int transactionId, int orderId, int customerId, BigDecimal totalAmount,
+			PaymentStatus paymentStatus, LocalDate timestamp) {
+		super();
+		this.transactionId = transactionId;
+		this.orderId = orderId;
+		this.customerId = customerId;
+		this.totalAmount = totalAmount;
+		this.paymentStatus = paymentStatus;
+		this.timestamp = timestamp;
+	}
+
+	public int getTransactionId() {
+		return transactionId;
+	}
+
+	public void setTransactionId(int transactionId) {
+		this.transactionId = transactionId;
+	}
+
+	public int getOrderId() {
+		return orderId;
+	}
+
+	public void setOrderId(int orderId) {
+		this.orderId = orderId;
+	}
+
+	public int getCustomerId() {
+		return customerId;
+	}
+
+	public void setCustomerId(int customerId) {
+		this.customerId = customerId;
+	}
+
+	public BigDecimal getTotalAmount() {
+		return totalAmount;
+	}
+
+	public void setTotalAmount(BigDecimal totalAmount) {
+		this.totalAmount = totalAmount;
+	}
+
+	public PaymentStatus getPaymentStatus() {
+		return paymentStatus;
+	}
+
+	public void setPaymentStatus(PaymentStatus paymentStatus) {
+		this.paymentStatus = paymentStatus;
+	}
+
+	public LocalDate getTimestamp() {
+		return timestamp;
+	}
+
+	public void setTimestamp(LocalDate timestamp) {
+		this.timestamp = timestamp;
+	}
+}

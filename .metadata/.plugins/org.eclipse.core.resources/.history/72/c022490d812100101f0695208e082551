@@ -1,0 +1,23 @@
+package com.ketan.service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.ketan.models.PaymentEntity;
+import com.ketan.repo.PaymentRepo;
+
+@Service
+public class PaymentServiceImpl implements PaymentService {
+
+	@Autowired
+	PaymentRepo paymentRepo;
+
+	@Override
+	public List<PaymentEntity> getPayments(int transactionId) {
+
+		return null;
+	}
+
+}

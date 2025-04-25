@@ -1,0 +1,22 @@
+package com.ketan.fulzele.Service;
+
+import java.util.List;
+
+import com.ketan.fulzele.Bean.ProductBean;
+
+public interface ProductService {
+
+	List<ProductBean> listAllProducts();
+	
+	ProductBean getProductById(int id);
+
+	ProductBean createProduct(ProductBean productBean);
+
+	List<ProductBean> deleteProducts(List<Integer> list);
+
+	void deleteAProduct(Integer productId);
+
+	ProductBean reserveProduct(int id, int qauntity);
+
+	ProductBean resetProduct(int productId, int qauntity);
+}

@@ -1,0 +1,78 @@
+package com.weshopify.platform.Entity;
+
+import org.hibernate.annotations.GeneratorType;
+
+import jakarta.annotation.Generated;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
+
+@Entity
+public class Product {
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private int id;
+	private String name;
+	private String type;
+	private int price;
+
+	private String productIMEI;
+//	@OneToOne
+//	private Qauntity qauntity; 
+
+	public Product(int id, String name, String type, int price, String productIMEI) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.type = type;
+		this.price = price;
+		this.productIMEI = (productIMEI);
+	}
+
+	public Product() {
+		super();
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public int getPrice() {
+		return price;
+	}
+
+	public void setPrice(int price) {
+		this.price = price;
+	}
+
+	public String getProductIMEI() {
+		return productIMEI;
+	}
+
+	public void setProductIMEI(String productIMEI) {
+		this.productIMEI = productIMEI;
+	}
+
+}

@@ -1,0 +1,6 @@
+package com.ketan.handler;
+
+public enum PaymentStatus {
+
+	PAYMNET_REVERSED , PAID 
+}

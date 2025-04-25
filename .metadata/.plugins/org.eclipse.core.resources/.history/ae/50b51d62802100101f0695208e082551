@@ -1,0 +1,24 @@
+package com.ketan.controller;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.ketan.Bean.orderBean;
+
+import lombok.extern.slf4j.Slf4j;
+
+@RestController
+@Slf4j
+public class PaymentController {
+
+	private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(PaymentController.class);
+	
+	@PostMapping("/payment")
+	public ResponseEntity<orderBean> createProduct(@RequestBody orderBean productBean) {
+		
+		return null ;
+	}
+	
+}

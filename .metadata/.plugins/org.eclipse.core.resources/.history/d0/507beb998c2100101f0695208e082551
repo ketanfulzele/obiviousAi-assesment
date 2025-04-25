@@ -1,0 +1,28 @@
+package com.ketan.Bean;
+
+public class ProductList {
+
+	int productId;
+	int qauntity;
+	
+	
+	public ProductList(int productId, int qauntity) {
+		super();
+		this.productId = productId;
+		this.qauntity = qauntity;
+	}
+	public int getProductId() {
+		return productId;
+	}
+	public void setProductId(int productId) {
+		this.productId = productId;
+	}
+	public int getQauntity() {
+		return qauntity;
+	}
+	public void setQauntity(int qauntity) {
+		this.qauntity = qauntity;
+	}
+	
+	
+}

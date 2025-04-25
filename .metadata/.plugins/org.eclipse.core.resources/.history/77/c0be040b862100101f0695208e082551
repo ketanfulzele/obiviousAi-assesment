@@ -1,0 +1,16 @@
+package com.ketan.Bean;
+
+
+
+
+//@FeignClient(url = "${services.categories.base-url}" , value = "CatFeignClient" )
+@FeignClient(name = "WESHOPIFY-PLATFORM-API-GATEWAY")
+public interface CatFeignClient {
+	@GetMapping("/gateway-catg-svc/category/{catId}")
+	public ResponseEntity<String> findCategoryById(@PathVariable int catId , @RequestHeader final Map<String , String> headers);
+}
+
+@FeignClient(url = "${services.categories.base-url}" ,value = "ProductFeignClient")
+public interface ProductFeignClient {
+
+}

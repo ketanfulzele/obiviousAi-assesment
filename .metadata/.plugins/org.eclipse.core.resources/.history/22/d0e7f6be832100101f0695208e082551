@@ -1,0 +1,15 @@
+package com.ketan.models;
+
+import com.ketan.handler.OrderStatus;
+
+import jakarta.persistence.Entity;
+
+@Entity
+public class OrdersEntity {
+
+	int orderId;
+	int AmountToPay;
+	OrderStatus orderStatus;
+	
+	
+}

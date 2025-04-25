@@ -1,0 +1,5 @@
+package com.ketan.Bean;
+
+public interface ProductFeignClient {
+
+}

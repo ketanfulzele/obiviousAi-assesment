@@ -1,0 +1,8 @@
+package com.ketan.service;
+
+import com.ketan.models.PaymentEntity;
+
+public interface PaymentService {
+
+	PaymentBean getPayments(int transactionId);
+}

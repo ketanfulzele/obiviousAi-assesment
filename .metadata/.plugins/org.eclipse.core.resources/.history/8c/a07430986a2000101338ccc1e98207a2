@@ -1,0 +1,12 @@
+package com.ketan.fulzele.Repo;
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.ketan.fulzele.Entity.ProductEntity;
+
+public interface ProductRepo extends JpaRepository<ProductEntity, Integer> {
+
+	public ProductEntity findByProductId(Integer productId);
+}

@@ -1,0 +1,114 @@
+package com.ketan.fulzele.Service;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.ketan.fulzele.Bean.ProductBean;
+import com.ketan.fulzele.Entity.ProductEntity;
+import com.ketan.fulzele.Repo.ProductRepo;
+
+@Service
+public class ProductServiceImpl implements ProductService {
+
+	@Autowired
+	ProductRepo productRepo;
+
+	@Override
+	public List<ProductBean> listAllProducts() {
+		List<ProductEntity> products = productRepo.findAll();
+		List<ProductBean> productBeans = new ArrayList<ProductBean>();
+		products.stream().forEach(product -> {
+			ProductBean bean = new ProductBean();
+			BeanUtils.copyProperties(product, bean);
+			productBeans.add(bean);
+		});
+		return productBeans;
+	}
+
+	@Override
+	public ProductBean createProduct(ProductBean productBean) {
+//		ProductEntity product = new ProductEntity();
+
+		ProductEntity product = productRepo.findByProductId(productBean.getProductId());
+
+		if (product != null && product.getProductId().equals(productBean.getProductId())) {
+			Integer id = product.getId();
+			BeanUtils.copyProperties(productBean, product);
+			product.setId(id);
+			product.setDate(LocalDateTime.now());
+			productRepo.save(product);
+		} else {
+			product = new ProductEntity();
+			Integer imeiNumber = new Random().nextInt(100000);
+			product.setProductId(imeiNumber);
+			BeanUtils.copyProperties(productBean, product);
+			product.setDate(LocalDateTime.now());
+			productRepo.save(product);
+		}
+
+		return productBean;
+	}
+
+	@Override
+	public List<ProductBean> deleteProducts(List<Integer> list) {
+
+		list.forEach(id -> {
+			deleteAProduct(id);
+		});
+
+		return Optional.of(listAllProducts()).orElseGet(ArrayList::new);
+	}
+
+	@Override
+	public void deleteAProduct(Integer productId) {
+		ProductEntity product = productRepo.findByProductId(productId);
+		productRepo.delete(product);
+
+	}
+
+	@Override
+	public ProductBean reserveProduct(int productId, int desiredQauntity) {
+
+		ProductEntity product = productRepo.findByProductId(productId);
+
+		int qauntity = product.getQuantity();
+		if (product.getQuantity() > desiredQauntity) {
+			qauntity -= desiredQauntity;
+		} else {
+			throw new RuntimeException("Desire qauntity of the product is not available in store");
+		}
+		product.setQuantity(qauntity);
+		productRepo.save(product);
+
+		ProductBean productBean = new ProductBean();
+		BeanUtils.copyProperties(product, productBean);
+		productBean.setQuantity(desiredQauntity);
+		return productBean;
+	}
+
+	@Override
+	public ProductBean resetProduct(int productId, int resetQauntity) {
+		// TODO Auto-generated method stub
+		ProductEntity product = productRepo.findByProductId(productId);
+		int qauntity = product.getQuantity();
+		qauntity += resetQauntity;
+		product.setQuantity(qauntity);
+		productRepo.save(product);
+
+		ProductBean productBean = new ProductBean();
+		BeanUtils.copyProperties(product, productBean);
+		productBean.setQuantity(resetQauntity);
+		return productBean;
+	}
+
+}

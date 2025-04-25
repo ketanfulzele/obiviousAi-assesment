@@ -1,0 +1,10 @@
+package com.ketan.service;
+
+import java.util.List;
+
+import com.ketan.models.PaymentEntity;
+
+public interface PaymentService {
+
+	List<PaymentEntity> getPayments(int transactionId);
+}

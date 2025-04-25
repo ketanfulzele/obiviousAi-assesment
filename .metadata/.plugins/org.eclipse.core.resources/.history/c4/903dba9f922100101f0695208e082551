@@ -1,0 +1,21 @@
+package com.ketan.outbound;
+
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
+////@FeignClient(url = "${services.categories.base-url}" , value = "CatFeignClient" )
+//@FeignClient(name = "WESHOPIFY-PLATFORM-API-GATEWAY")
+//public interface CatFeignClient {
+//	@GetMapping("/gateway-catg-svc/category/{catId}")
+//	public ResponseEntity<String> findCategoryById(@PathVariable int catId , @RequestHeader final Map<String , String> headers);
+//}
+
+@FeignClient(url = "${services.product.base-url}" ,value = "ProductFeignClient")
+//@FeignClient(name = "WESHOPIFY-PLATFORM-API-GATEWAY")
+public interface ProductFeignClient {
+
+	@GetMapping("/inventory/{id}")
+	public ResponseEntity<String> getProductById(@PathVariable int id);
+}

@@ -1,0 +1,21 @@
+package com.ketan.controller;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.ketan.Bean.orderBean;
+
+@RestController
+public class OrderController {
+
+	
+	
+	@PostMapping("/place-order")
+	public ResponseEntity<orderBean> createProduct(@RequestBody orderBean productBean) {
+
+		
+		return null;
+	}
+}

@@ -1,0 +1,59 @@
+package com.ketan.fulzele.Resource;
+
+import java.util.List;
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.ketan.fulzele.Bean.ProductBean;
+import com.ketan.fulzele.Service.ProductServiceImpl;
+
+import lombok.extern.slf4j.Slf4j;
+
+@RestController
+@Slf4j
+public class ProductResource {
+
+	private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ProductResource.class);
+
+	@Autowired
+	ProductServiceImpl productServiceImpl;
+
+	@GetMapping("/inventory")
+	public ResponseEntity<List<ProductBean>> getAllProducts() {
+		log.info("inside getAllProducts, fetching all products ");
+		return ResponseEntity.ok(productServiceImpl.listAllProducts());
+	}
+
+	@PostMapping("/inventory")
+	public ResponseEntity<ProductBean> createProduct(@RequestBody ProductBean productBean) {
+		log.info("inside createProduct, creating product : " + productBean);
+		return ResponseEntity.ok(productServiceImpl.createProduct(productBean));
+	}
+
+	@DeleteMapping("/inventory")
+	public ResponseEntity<List<ProductBean>> deleteProducts(@RequestBody List<UUID> productsId) {
+		log.info("inside deleteProducts, deleting product with ids : " + productsId.toString());
+		List<ProductBean> list = productServiceImpl.deleteProducts(productsId);
+		return ResponseEntity.ok(list);
+	}
+
+	@GetMapping("/inventory/{productId}/{qauntity}")
+	public ResponseEntity<ProductBean> reserveProduct(@PathVariable("productId") int id, @PathVariable int qauntity) {
+		log.info("inside reserve Product, reserving : " + qauntity + ",for products id : " + id);
+		return ResponseEntity.ok(productServiceImpl.reserveProduct(id, qauntity));
+	}
+//
+//	@GetMapping("/products/reset/{productId}/{qauntity}")
+//	public ResponseEntity<ProductBean> resetProduct(@PathVariable("productId") int id, @PathVariable int qauntity) {
+//		log.info("inside reset Product, reseting : " + qauntity + ",for products id : " + id);
+//		return ResponseEntity.ok(productServiceImpl.resetProduct(id, qauntity));
+//	}
+}

@@ -1,0 +1,64 @@
+package com.ketan.handler;
+
+import java.math.BigDecimal;
+
+import org.axonframework.commandhandling.CommandHandler;
+import org.axonframework.eventsourcing.EventSourcingHandler;
+import org.axonframework.modelling.command.AggregateIdentifier;
+import org.axonframework.modelling.command.AggregateLifecycle;
+import org.axonframework.spring.stereotype.Aggregate;
+
+import com.ketan.commands.CreateInvoiceCommand;
+import com.ketan.events.InvoiceCreatedEvent;
+import com.ketan.events.PaymentProcessFailedEvent;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Aggregate
+public class PaymentAggregate {
+
+	private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(PaymentAggregate.class);
+	
+	@AggregateIdentifier
+	private String paymentId;
+	private String orderId;
+	private BigDecimal price;
+	private String status;
+
+	@CommandHandler
+	public PaymentAggregate(CreateInvoiceCommand createInvoiceCommand) {
+		log.info("I am in Invoice aggregator command handler");
+		if (createInvoiceCommand.price != null) {
+			if (createInvoiceCommand.price.doubleValue() != 0) {
+				AggregateLifecycle
+						.apply(new InvoiceCreatedEvent(createInvoiceCommand.paymentId, createInvoiceCommand.orderId));
+			} else {
+				log.info("invoice not created due to payment failure");
+				AggregateLifecycle.apply(
+						new PaymentProcessFailedEvent(createInvoiceCommand.paymentId, createInvoiceCommand.orderId));
+			}
+		} else {
+			log.info("invoice not created due to payment failure");
+			AggregateLifecycle
+					.apply(new PaymentProcessFailedEvent(createInvoiceCommand.paymentId, createInvoiceCommand.orderId));
+		}
+	}
+
+	@EventSourcingHandler
+	public void paymentFailedEventSourcingHandler(PaymentProcessFailedEvent paymentProcessFailedEvent) {
+		log.info("failed payment event published ");
+		this.orderId = paymentProcessFailedEvent.orderId;
+		this.paymentId = paymentProcessFailedEvent.paymentId;
+		this.status = PaymentStatus.PAYMNET_REVERSED.name();
+	}
+	
+	@EventSourcingHandler
+	public void invoiceCreatedEventSourcingHandler(InvoiceCreatedEvent invoiceCreatedEvent) {
+		log.info("Invoice created event published  ");
+		this.orderId = invoiceCreatedEvent.orderId;
+		this.paymentId = invoiceCreatedEvent.paymentId;
+		this.status = PaymentStatus.PAID.name();
+	}
+
+}

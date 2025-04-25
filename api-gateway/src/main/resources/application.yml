@@ -1,0 +1,64 @@
+spring:
+  application:
+    name: API-GATEWAY
+    
+# enable service discovery from gateway.
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+#       payment service routes 
+        - id : PAYMENT-SERVICE
+          uri : lb://PAYMENT-SERVICE
+          predicates:
+          - Path=/payment-svc/**
+          filters:
+          - RewritePath=/payment-svc/(?<segment>.*),/${segment}
+ #       product service routes 
+        - id :  product-service
+          uri : lb://product-service
+          predicates:
+          - Path=/product-service/**
+          filters:
+          - RewritePath=/product-service/(?<segment>.*),/${segment}
+        
+
+management:
+# spring boot3.X onwards we need to explicitly enabled gateway routes endpoint for spring actuators
+  endpoint:
+    gateway:
+      access: READ_ONLY
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  tracing:
+    enabled: true
+    sampling:
+      probability: 1.0
+  zipkin:
+    tracing:
+      endpoint: http://${ZIPKIN_HOST:localhost}:${ZIPKIN_PORT:9411}/api/v2/spans
+logging:
+  pattern:
+    level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
+server:
+  port: 5012
+  
+eureka : 
+     client: 
+       service-url:
+         defaultZone: http://${SERVICE_REGISTRY_HOST:localhost}:${SERVICE_REGISTRY_PORT:8761}/eureka
+#  use to register our category service as local host and not with laptop host( LTIN538669.cts.com)
+     instance:
+       hostname: ${SERVICE_REGISTRY_HOST:localhost}
+       instance-id : ${spring.application.name}:${server.port}
+       prefer-ip-address : true
+
+      
+      
+    
+

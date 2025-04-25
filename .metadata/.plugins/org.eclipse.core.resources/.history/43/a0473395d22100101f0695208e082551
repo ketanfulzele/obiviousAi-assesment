@@ -1,0 +1,21 @@
+package com.ketan.config;
+
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class AppSecurityConfig {
+
+
+	http.authorizeHttpRequests(authz -> {
+		try {
+			authz.anyRequest().authenticated()
+				.and().csrf().disable().anonymous().disable();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+});
+	return http.build();
+	
+
+}

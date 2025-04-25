@@ -1,0 +1,29 @@
+package com.ketan.service;
+
+import java.util.List;
+
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.ketan.Bean.PaymentBean;
+import com.ketan.models.PaymentEntity;
+import com.ketan.repo.PaymentRepo;
+
+@Service
+public class PaymentServiceImpl implements PaymentService {
+
+	@Autowired
+	PaymentRepo paymentRepo;
+
+	@Override
+	public PaymentBean getPayment(int transactionId) {
+		
+		PaymentEntity paymentEntity = paymentRepo.findById(transactionId).get();
+		
+		PaymentBean bean = new PaymentBean();
+		BeanUtils.copyProperties(paymentEntity, bean);
+		return bean;
+	}
+
+}

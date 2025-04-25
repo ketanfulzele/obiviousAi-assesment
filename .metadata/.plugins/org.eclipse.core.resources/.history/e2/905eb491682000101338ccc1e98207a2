@@ -1,0 +1,69 @@
+package com.ketan.fulzele.Entity;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+import org.hibernate.annotations.GeneratorType;
+
+import jakarta.annotation.Generated;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
+
+@Entity
+public class ProductEntity {
+	
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private int id;
+	@Id
+	private UUID productId;
+	private Integer quantity;
+	private LocalDateTime date;
+
+	public ProductEntity(int id, UUID productId, Integer quantity, LocalDateTime date) {
+		super();
+		this.id = id;
+		this.productId = productId;
+		this.quantity = quantity;
+		this.date = date;
+	}
+
+	public ProductEntity() {
+		super();
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public UUID getProductId() {
+		return productId;
+	}
+
+	public void setProductId(UUID productId) {
+		this.productId = productId;
+	}
+
+	public Integer getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(Integer quantity) {
+		this.quantity = quantity;
+	}
+
+	public LocalDateTime getDate() {
+		return date;
+	}
+
+	public void setDate(LocalDateTime date) {
+		this.date = date;
+	}
+
+}

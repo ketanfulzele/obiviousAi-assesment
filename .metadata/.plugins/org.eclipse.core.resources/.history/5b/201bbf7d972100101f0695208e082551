@@ -1,0 +1,47 @@
+package com.ketan.service;
+
+import java.util.Random;
+
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.ketan.Bean.PaymentBean;
+import com.ketan.Bean.PaymentRequestBean;
+import com.ketan.handler.PaymentStatus;
+import com.ketan.models.PaymentEntity;
+import com.ketan.repo.PaymentRepo;
+
+@Service
+public class PaymentServiceImpl implements PaymentService {
+
+	@Autowired
+	PaymentRepo paymentRepo;
+
+	@Override
+	public PaymentBean getPayment(int transactionId) {
+		
+		PaymentEntity paymentEntity = paymentRepo.findById(transactionId).get();
+		
+		PaymentBean bean = new PaymentBean();
+		BeanUtils.copyProperties(paymentEntity, bean);
+		return bean;
+	}
+
+	@Override
+	public String makePayment(PaymentRequestBean paymentRequestBean) {
+		PaymentEntity paymentEntity = new PaymentEntity();
+		Random random = new Random();
+		paymentEntity.setCustomerId(paymentRequestBean.getCustomerId());
+		paymentEntity.setOrderId(paymentRequestBean.getOrderId());
+		paymentEntity.setTotalAmount(paymentRequestBean.getAmountToPay());
+		if(paymentRequestBean.getAmountToPay().byteValue() != 0) {
+			paymentEntity.setPaymentStatus(PaymentStatus.SUCCESS);
+		}else {
+			paymentEntity.setPaymentStatus(PaymentStatus.FAILED);
+		}
+		
+		return null;
+	}
+
+}

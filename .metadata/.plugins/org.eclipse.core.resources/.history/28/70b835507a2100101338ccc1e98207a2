@@ -1,0 +1,50 @@
+package com.weshopify.platform.config;
+
+import java.math.BigDecimal;
+
+import org.axonframework.commandhandling.CommandHandler;
+import org.axonframework.eventsourcing.EventSourcingHandler;
+import org.axonframework.modelling.command.AggregateIdentifier;
+import org.axonframework.modelling.command.AggregateLifecycle;
+import org.axonframework.spring.stereotype.Aggregate;
+
+import com.ketan.commands.CreateOrderCommand;
+import com.weshopify.platform.events.OrderCreatedEvent;
+import com.weshopify.platform.model.OrderStatus;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Aggregate
+public class OrderAggregate {
+	private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(OrderAggregate.class);
+
+	@AggregateIdentifier
+	public String orderId;
+	public String itemType;
+	public BigDecimal price;
+	public String currency;
+	public String orderStatus;
+
+	@CommandHandler
+	public OrderAggregate(CreateOrderCommand command) {
+
+		log.info("order aggregate received the create order command");
+		log.info("Command is now converting to event");
+
+		OrderCreatedEvent orderEvent = new OrderCreatedEvent(command.orderId, command.itemType, command.price,
+				command.currency, OrderStatus.CREATED.name());
+		AggregateLifecycle.apply(orderEvent);
+	}
+
+	@EventSourcingHandler
+	public void orderCreatedEventhandler(OrderCreatedEvent orderEvent) {
+		log.info("order created event published ");
+		this.orderId = orderEvent.orderId;
+		this.itemType = orderEvent.itemType;
+		this.price = orderEvent.price;
+		this.currency = orderEvent.currency;
+		this.orderStatus = orderEvent.orderStatus;
+
+	}
+}

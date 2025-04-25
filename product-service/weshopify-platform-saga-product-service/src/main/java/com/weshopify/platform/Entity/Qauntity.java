@@ -1,0 +1,58 @@
+package com.weshopify.platform.Entity;
+
+import java.io.Serializable;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import lombok.Data;
+
+@Entity
+@Data
+public class Qauntity implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	private String id;
+	private int productId;
+	private int qauntity;
+
+	public Qauntity(String id, int productId, int qauntity) {
+		super();
+		this.id = id;
+		this.productId = productId;
+		this.qauntity = qauntity;
+	}
+
+	public Qauntity() {
+		super();
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public int getProductId() {
+		return productId;
+	}
+
+	public void setProductId(int productId) {
+		this.productId = productId;
+	}
+
+	public int getQauntity() {
+		return qauntity;
+	}
+
+	public void setQauntity(int qauntity) {
+		this.qauntity = qauntity;
+	}
+
+}

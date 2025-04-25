@@ -1,0 +1,9 @@
+package com.ketan.fulzele.Repo;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.ketan.fulzele.Entity.Qauntity;
+
+public interface QauntityRepo extends JpaRepository<Qauntity, String> {
+
+}

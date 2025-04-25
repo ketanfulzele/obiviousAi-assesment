@@ -1,0 +1,112 @@
+package com.ketan.fulzele.Service;
+
+import java.util.UUID;
+
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.ketan.fulzele.Bean.ProductBean;
+import com.ketan.fulzele.Entity.ProductEntity;
+import com.ketan.fulzele.Repo.ProductRepo;
+import com.ketan.fulzele.Repo.QauntityRepo;
+
+@Service
+public class ProductServiceImpl implements ProductService {
+
+	@Autowired
+	ProductRepo productRepo;
+
+	@Autowired
+	QauntityRepo qauntityRepo;
+
+//	@Override
+//	public List<ProductBean> listAllProducts() {
+//		List<Product> products = productRepo.findAll();
+//		List<ProductBean> productBeans = new ArrayList<ProductBean>();
+//		products.stream().forEach(product -> {
+//			ProductBean bean = new ProductBean();
+//			BeanUtils.copyProperties(product, bean);
+//			int quntity = qauntityRepo.findById( product.getProductIMEI() ).get().getQauntity();
+//			bean.setQauntityResereved(quntity);
+//			productBeans.add(bean);
+//		});
+//		return productBeans;
+//	}
+
+	@Override
+	public ProductBean createProduct(ProductBean productBean) {
+		ProductEntity product = new ProductEntity();
+		UUID imeiNumber = UUID.randomUUID();
+		product.setProductId(imeiNumber);
+		BeanUtils.copyProperties(productBean, product);
+		productRepo.save(product);
+
+		return productBean;
+	}
+
+//	@Override
+//	public List<ProductBean> deleteProducts(List<Integer> list) {
+//
+//		list.forEach(id -> {
+//			deleteAProduct(id);
+//		});
+//
+//		return Optional.of(listAllProducts()).orElseGet(ArrayList::new);
+//	}
+//
+//	@Override
+//	public void deleteAProduct(int productId) {
+//		ProductEntity product = productRepo.findById(productId).get();
+//		String imeiId = product.getProductIMEI();
+//		Qauntity q = qauntityRepo.findById(imeiId).get();
+//		qauntityRepo.delete(q);
+//		productRepo.delete(product);
+//
+//	}
+//
+	@Override
+	public ProductBean reserveProduct(int id, int desiredQauntity) {
+		Product product = productRepo.findById(id).get();
+		String imei = product.getProductIMEI();
+
+		Qauntity q = qauntityRepo.findById(imei).get();
+		int qauntity = q.getQauntity();
+
+		if (qauntity > desiredQauntity) {
+
+			qauntity -= desiredQauntity;
+		} else {
+			throw new RuntimeException("Desire qauntity of the product is not available in store");
+		}
+		q.setQauntity(qauntity);
+		qauntityRepo.save(q);
+
+		ProductBean productBean = new ProductBean();
+		BeanUtils.copyProperties(product, productBean);
+		productBean.setQauntityResereved(desiredQauntity);
+		productBean.setStatus("RESEREVED");
+		return productBean;
+	}
+//
+//	@Override
+//	public ProductBean resetProduct(int id, int resetQauntity) {
+//		// TODO Auto-generated method stub
+//		Product product = productRepo.findById(id).get();
+//		String imei = product.getProductIMEI();
+//
+//		Qauntity q = qauntityRepo.findById(imei).get();
+//		int qauntity = q.getQauntity();
+//
+//		qauntity += resetQauntity;
+//		q.setQauntity(qauntity);
+//		qauntityRepo.save(q);
+//
+//		ProductBean productBean = new ProductBean();
+//		BeanUtils.copyProperties(product, productBean);
+//		productBean.setQauntityResereved(resetQauntity);
+//		productBean.setStatus("RESETTED");
+//		return productBean;
+//	}
+
+}

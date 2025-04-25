@@ -1,0 +1,31 @@
+package com.ketan.Bean;
+
+public class PaymentRequestBean {
+
+	int customerId;
+	int orderId;
+	int AmountToPay;
+
+	public PaymentRequestBean(int orderId, int amountToPay) {
+		super();
+		this.orderId = orderId;
+		AmountToPay = amountToPay;
+	}
+
+	public int getOrderId() {
+		return orderId;
+	}
+
+	public void setOrderId(int orderId) {
+		this.orderId = orderId;
+	}
+
+	public int getAmountToPay() {
+		return AmountToPay;
+	}
+
+	public void setAmountToPay(int amountToPay) {
+		AmountToPay = amountToPay;
+	}
+
+}

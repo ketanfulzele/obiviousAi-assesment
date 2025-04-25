@@ -1,0 +1,118 @@
+package com.ketan.service;
+
+import java.util.List;
+import java.util.Random;
+
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ketan.Bean.OrderResponseBean;
+import com.ketan.Bean.ProductBean;
+import com.ketan.Bean.ProductList;
+import com.ketan.Bean.orderBean;
+import com.ketan.advice.ApiException;
+import com.ketan.handler.OrderStatus;
+import com.ketan.models.OrdersEntity;
+import com.ketan.outbound.ProductFeignClient;
+import com.ketan.repo.OrderRepo;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@Slf4j
+public class OrderServiceImpl  implements OrderService{
+	
+	private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(OrderServiceImpl.class);
+
+	@Autowired
+	ProductFeignClient productFeignClient;
+	
+	@Autowired
+	ObjectMapper objectMapper;
+	
+	@Autowired
+	OrderRepo orderRepo;
+	
+	@Override
+	public OrderResponseBean placeOrder(orderBean OrdersBean) {
+		
+		int total = 0 ;
+		List<ProductList> products = OrdersBean.getProductList();
+		
+		for(ProductList product : products) {
+			
+			ProductBean bean = getProduct(product.getProductId());
+			total += bean.getPricePerProduct() * bean.getQuantity();
+			ResponseEntity<String> response = productFeignClient.reserveProduct(product.getProductId(), product.getQauntity());
+			try {
+				ProductBean object =  objectMapper.readValue(response.getBody() , ProductBean.class);
+			} catch (JsonProcessingException e) {
+				throw new ApiException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value());
+			}
+		}
+		
+		if(total != 0) {
+			OrderResponseBean response = new OrderResponseBean();
+			response.setAmountToPay(total);
+			Random random = new Random();
+			response.setOrderId(random.nextInt(100000));
+			response.setOrderStatus(OrderStatus.SUCCESSFULL.toString());
+			OrdersEntity entity = new OrdersEntity();
+			BeanUtils.copyProperties(response, entity);
+			orderRepo.save(entity);
+			
+			return response;
+		}else {
+			OrderResponseBean response = new OrderResponseBean();
+			response.setAmountToPay(total);
+			Random random = new Random();
+			response.setOrderId(random.nextInt(100000));
+			response.setOrderStatus(OrderStatus.UNSUCCESSFULL.toString());
+			
+			for(ProductList product : products) {
+				ResponseEntity<String> productApiResponse = productFeignClient.reserveProduct(product.getProductId(), product.getQauntity());
+				try {
+					ProductBean object =  objectMapper.readValue(productApiResponse.getBody() , ProductBean.class);
+				} catch (JsonProcessingException e) {
+					throw new ApiException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value());
+				}
+				
+			}
+			
+			OrdersEntity entity = new OrdersEntity();
+			BeanUtils.copyProperties(response, entity);
+			orderRepo.save(entity);
+			return response;
+		}
+		
+	}
+	
+	private ProductBean getProduct(int id) {
+		
+		log.info("invoking the product service via feign client");
+		ResponseEntity<String> product = productFeignClient.getProductById(id);
+		
+		ProductBean object = null;
+
+		if (product.getStatusCode().value() == HttpStatus.OK.value() && product != null) {
+			try {
+				log.info("successfully get the product \t" , product.getBody() );
+				 object = objectMapper.readValue(product.getBody() , ProductBean.class);
+			} catch (JsonProcessingException e) {
+
+				throw new ApiException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value());
+			}
+		}else {
+			log.info("failed to get product by id hence, retry pattern will try for 3 times after each 3 seconds");
+		}
+		return object ;
+	}
+	
+	
+
+}

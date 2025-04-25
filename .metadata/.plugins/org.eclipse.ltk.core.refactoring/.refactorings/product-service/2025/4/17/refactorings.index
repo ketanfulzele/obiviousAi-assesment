@@ -1,0 +1,12 @@
+1745418782387	Rename package 'com.weshopify.platform'
+1745418795478	Rename package 'com.weshopify.platform.Bean'
+1745418805348	Rename package 'com.weshopify.platform.Entity'
+1745418816285	Rename package 'com.weshopify.platform.Repo'
+1745418823683	Rename package 'com.weshopify.platform.Resource'
+1745418832534	Rename package 'com.weshopify.platform.Service'
+1745426624298	Rename compilation unit 'Product.java'
+1745427426999	Delete element
+1745428134798	Delete element
+1745554112002	Copy compilation unit
+1745555623725	Encapsulate field 'pricePerProduct'
+1745555687338	Encapsulate field 'pricePerProduct'

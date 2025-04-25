@@ -1,0 +1,11 @@
+package com.ketan.models;
+
+import jakarta.persistence.Entity;
+
+@Entity
+public class OrdersEntity {
+
+	int orderId;
+	int AmountToPay;
+	Enum orderStatus;
+}

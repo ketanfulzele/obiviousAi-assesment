@@ -1,0 +1,23 @@
+package com.ketan.Bean;
+
+import java.util.List;
+
+public class orderBean {
+
+	List<ProductBean> productList;
+
+	public orderBean(List<ProductBean> productList) {
+		super();
+		this.productList = productList;
+	}
+
+	public List<ProductBean> getProductList() {
+		return productList;
+	}
+
+	public void setProductList(List<ProductBean> productList) {
+		this.productList = productList;
+	}
+	
+	
+}

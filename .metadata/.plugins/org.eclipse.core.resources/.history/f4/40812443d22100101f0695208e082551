@@ -1,0 +1,39 @@
+spring:
+  application:
+    name: weshopify-payment-service
+  datasource:
+    driverClassName : org.h2.Driver
+#    username : admin
+#    password: admin
+    url: jdbc:h2:mem:paymentDB
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    defer-datasource-initialization: true
+    hibernate:
+      ddl-auto: update
+  h2:
+    console:
+      enabled: true
+server:
+  port: 5020
+  
+springdoc:
+  api-docs:
+    enabled:   true  
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    
+services :
+  product :
+    base-url : 'http://${PRODUCT_SERVICE_HOST:localhost}:${CATEGORIES_SERVICE_PORT:5018}/'
+    
+resilience4j:
+  circuitbreaker:
+    instances:
+      order-circuit : 
+        registerHealthIndicator: true
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 30s
+        permittedNumberOfCallsInHalfOpenState: 2
